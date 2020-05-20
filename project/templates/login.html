@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div class="">
+		<form method="POST" action="" class="bg-dark rounded-top" style=" padding: 30px; box-shadow: 0px 0px 10px 0px; animation: Slide_Up 1.4s ease;">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+				<legend class="border-bottom mb-4 text-white">Log In</legend>	
+				<div class="form-group">
+					
+					{% if form.userTpye.errors %}
+						{% for subfield in form.userTpye %}
+						{{ subfield }}
+						{{ subfield.label(class="form-control-label text-white pr-4") }}
+						{% endfor %}	
+						<div class="invalid-feedback">
+							{% for error in form.userTpye.errors %}
+									<span> {{ error }}	</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{% for subfield in form.userTpye %}
+						{{ subfield }}
+						{{ subfield.label(class="form-control-label text-white pr-4") }}
+						{% endfor %}
+					{% endif %}
+				</div>
+				<div class="form-group">
+					{{ form.email.label(class="form-control-label text-white") }}
+					{% if form.email.errors %}
+						{{ form.email(class="form-control form-control-lg is-invalid") }}	
+						<div class="invalid-feedback">
+							{% for error in form.email.errors %}
+									<span> {{ error }}	</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.email(class="form-control form-control-lg") }}
+					{% endif %}
+				</div>
+				<div class="form-group">
+					{{ form.password.label(class="form-control-label text-white") }}
+					{% if form.password.errors %}
+						{{ form.password(class="form-control form-control-lg is-invalid") }}	
+						<div class="invalid-feedback">
+							{% for error in form.password.errors %}
+									<span> {{ error }}	</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.password(class="form-control form-control-lg") }}
+					{% endif %}
+				</div>
+				<div class="form-check">
+					{{form.remember(class="form-check-input ")}}
+					{{form.remember.label(class="form-check-label text-white")}}
+				</div>
+			</fieldset>
+			<div class="form-group">
+				{{ form.submit(class="btn btn-outline-info") }}
+			</div>
+			<small class="text-muted ml-2">
+				<a href="#">Forgot Password?</a>
+			</small>
+		</form>
+	</div>
+	<div class="pt-3" style="animation: Slide_Right 2s ease;">
+		<small class="text-muted">
+			Need have an Account <a class="ml-2" href="{{ url_for('EmpRegister') }}">Sign Up</a>
+		</small>
+	</div>
+
+
+{% endblock content %}

@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 style="animation: Fade_in 1.4s;">DASHBOARD</h1>
+<div class="content-section table-responsive-lg " style="animation: Slide_Right 1.4s ease;">
+    <table class="table table-hover">
+        <h3 class="lead">Employee Requests</h3>
+        <thead class="thead-dark">
+            <tr>   
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Kashir</td>
+                <td>ksf@gmail.com</td>
+                <td>
+                    <button type="submit" class="btn btn-primary mr-2">accept</button>
+                    <button type="submit" class="btn btn-danger" >reject</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Mark</td>
+                <td>mdo@gmail.com</td>
+                <td>
+                    <button type="submit" class="btn btn-primary mr-2">accept</button>
+                    <button type="submit" class="btn btn-danger" >reject</button>
+                </td>      
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="content-section table-responsive-lg" style="animation: Slide_Right 1.4s ease;">
+    <table class="table table-hover">
+        <h3 class="lead">Employee List</h3>
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mishal</td>
+            <td>msh@gmail.com</td>
+            <td>
+                <button type="submit" class="btn btn-primary" style="margin-right: 10px;">drive</button>
+                <button type="submit" class="btn btn-danger" >remove</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Laraib</td>
+            <td>lrb@gmail.com</td>
+            <td>
+                <button type="submit" class="btn btn-primary" style="margin-right: 10px;">drive</button>
+                <button type="submit" class="btn btn-danger" >remove</button>
+            </td>     
+          </tr>
+        </tbody>
+      </table>
+</div>
+{% endblock content %}

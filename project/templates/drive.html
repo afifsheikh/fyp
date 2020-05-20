@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form action="{{ url_for('upload_file') }}" enctype="multipart/form-data" id="upload-form" method="POST">
+	<!-- <label class="btn btn-info">
+	    <input type="file" name="file" multiple style="display: none" />
+	    Custom Upload
+	 </label> -->
+	
+	<input type="file" name="file" id="file-upload" multiple required/>
+	<label class="btn btn-link" for="file-upload">Select files</label>
+  	<input class="btn btn-info ml-5 mb-2" type="submit" name="upload" value="upload">
+  	<p class="text-muted" id="file-upload-filename"></p>
+	
+	<!-- <input class="btn btn-info" type="file" name="file" multiple> -->
+	
+</form>
+
+
+{% if cur_folder == 'drive' %}
+>>{{cur_folder}}
+	{% else %}
+>><a href="{{ url_for('subFolder', name=prev_folder) }}">{{prev_folder}}/</a>{{cur_folder}}
+{% endif %}
+
+<div class = 'row'>
+	{% for d in dirs %}
+	<div class = 'col-sm-4' style="animation: Fade_in 1.4s ease;">
+		<article class="media content-section">
+		  <div class="media-body">
+		    <div class="article-metadata">
+		      <a class="mr-2" href="#">FOLDER</a>
+		      <a href="#"><small class="text-muted">DELETE</small></a>
+		    </div>
+				<a href="{{ url_for('subFolder', name= cur_folder + '/' + d) }}">
+			    <img class= '' src="{{ image_folder }}">
+			</a>
+		    <h2><a class="article-title" href="{{ url_for('subFolder', name=cur_folder + '/' + d) }}">{{ d }}</a></h2>
+		    <p class="article-content"></p>	    		    
+			  </div>
+		</article>
+			
+	</div>
+	{% endfor %}		
+</div>
+
+<hr>
+<hr>
+	
+
+<div class = 'row'>
+	{% for f in files %}
+	<div class = 'col-sm-4' style="animation: Fade_in 1.4s ease;">
+		<a href="#">
+		<article class="media content-section">
+		  <div class="media-body">
+		    <div class="article-metadata">
+		      <a class="mr-2" href="#">FILE</a>
+		      <small class="text-muted">DELETE</small>
+		    </div>
+		    <a href="{{ url_for('downloadFile', abspath= cur_folder + '/' + f) }}" target="blank">
+			    <img class= '' src="{{ image_file }}">
+			</a>
+		    <h2><a class="article-title" href="#"></a></h2>
+		    <p class="article-content">{{ f }}</p>	    		    
+			  </div>
+		</article>
+		</a>	
+	</div>
+	{% endfor %}		
+</div>
+<script type="text/javascript">
+	var input = document.getElementById( 'file-upload' );
+	var infoArea = document.getElementById( 'file-upload-filename' );
+
+input.addEventListener( 'change', showFileName );
+
+function showFileName( event ) {
+  
+  // the change event gives us the input it occurred in 
+  var input = event.srcElement;
+  
+  // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+  // var fileName = input.files[0].name;
+  
+  // use fileName however fits your app best, i.e. add it into a div
+  var i;
+  var cont = "";
+  infoArea.textContent = 'File name: '
+  for(i = 0; i <= input.files.length; i++)
+  {
+	  var fileName = input.files[i].name;	
+	  // cont += fileName + "%0D%0A";
+	  if (i == input.files.length - 1) 
+	  	{
+	  		infoArea.textContent += fileName;
+	  		continue;
+	  	}
+	  	else
+	  		{
+	  			infoArea.textContent += fileName + ' || ';
+	  		}
+  }
+  
+  
+  // infoArea.textContent += cont;
+}
+</script>
+
+<style type="text/css">
+input[type="file"] { 
+  z-index: -1;
+  position: absolute;
+  opacity: 0;
+}
+
+input:focus + label {
+  outline: 2px solid;
+}
+</style>
+{% endblock content %}
