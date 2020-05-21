@@ -6,7 +6,7 @@ from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort,send_file, send_from_directory
 from project import app, db, bcrypt, login_manager
 from project.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, Emp_RegistrationForm, Org_RegistrationForm
-from project.models import User, Post, Role
+from project.models import User, Post, Role, empRequest, empList
 from flask_login import login_user, current_user, logout_user, login_required
 from functools import wraps
 # from flask_user import roles_required, UserManager
@@ -76,12 +76,18 @@ def EmpRegister():
 	form = Emp_RegistrationForm()
 	if form.validate_on_submit():
 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+		#org_chk = User.query.filter_by(username=form.org_code.data).first()
 		emp = User(username=form.username.data, email=form.email.data, password=hashed_password, parent_org=form.org_code.data)
+		#if form.org_code.data = org_chk.username:
+		empreq = empRequest(empname=form.username.data, orgname=form.org_code.data) 
+		db.session.add(empreq)
 		emp_role = Role.query.filter_by(name='emp').first()
 		emp.roles = [emp_role]
 		db.session.add(emp)
 		db.session.commit()
 		flash("You have been registerd as an Employee!", 'success')
+		# else:
+		# 	flash("There Is no Such Organization", 'warning')
 		return redirect(url_for('login'))
 	return render_template('emp_registration.html', title='Register', form=form)
 
@@ -131,6 +137,7 @@ def login():
 		# 		return redirect(next_page) if next_page else redirect(url_for('home')) # this is done so that if login page is directed from a restricted page then after login it redirects to that page instead of home page
 		# else:
 		user = User.query.filter_by(email=form.email.data).first()
+		
 		if user and bcrypt.check_password_hash(user.password, form.password.data):
 			login_user(user, remember=form.remember.data)
 			next_page = request.args.get('next') #args is a dictionary we use get method so that if the next prameter dost not exits it gives none so dont use square brackets with the key
@@ -150,14 +157,50 @@ def logout():
 @login_required
 # @roles_required('org')
 def Dashboard():
-	adminRole = Role.query.filter_by(name='Admin').first()
+	adminRole = Role.query.filter_by(name='Admin').first() #selection
 	orgRole = Role.query.filter_by(name='org').first()
 	for role in current_user.roles:
 		if role == adminRole or role == orgRole:
-			return render_template('org_dashboard.html', title='Dashboard')
+			req = empRequest.query.filter_by(orgname=current_user.username).all()
+			newReq = []
+			for rec in req:
+				e = User.query.filter_by(username=rec.empname).first()
+				newReq.append(e)
+			# employee List 
+			emplst = empList.query.filter_by(orgname=current_user.username).all()
+			newEmpLst = []
+			for rec in emplst:
+				e = User.query.filter_by(username=rec.empname).first()
+				newEmpLst.append(e)
+			print(f'LIST : {newEmpLst}')
+			return render_template('org_dashboard.html', title='Dashboard',req = newReq, emplst = newEmpLst) 
 		
 	abort(403)
+@app.route("/Dashboard/<string:empname>/<string:orgname>")
+@login_required
+def req_emp(empname,orgname):
+	emp  = empRequest.query.filter_by(empname=empname,orgname=orgname).first()
+	empAdd = empList(empname = emp.empname, orgname=emp.orgname)
+	db.session.add(empAdd)
+	db.session.delete(emp)
+	db.session.commit()
+	return redirect(url_for('Dashboard'))
 
+@app.route("/deleteEmployee/<string:en>/<string:on>")
+@login_required
+def del_emplist(en,on):
+	emp  = empList.query.filter_by(empname=en,orgname=on).first()
+	db.session.delete(emp)
+	db.session.commit()
+	return redirect(url_for('Dashboard'))
+
+@app.route("/requestdelete/<string:e>/<string:o>")
+@login_required
+def del_empreq(e,o):
+	emp  = empRequest.query.filter_by(empname=e,orgname=o).first()
+	db.session.delete(emp)
+	db.session.commit()
+	return redirect(url_for('Dashboard'))
 
 def save_picture(form_picture):
 	random_hex = secrets.token_hex(8)
@@ -243,10 +286,10 @@ def delete_post(post_id):
 
 def initUser():
 	# Organization me ye org_name hy
-	""" yahan pe check kro k current_user.role == 'employee' to phr
-	 rootFolder =  current_user.parent . '/' . current_user.username;
+	# yahan pe check kro k current_user.role == 'employee' to phr
+	# rootFolder =  current_user.parent . '/' . current_user.username;
 	
-	"""
+
 	root_dir = dih.getRootDir(userName=current_user.username)	
 	dirs = dih.getAllFoldersInAFolder(folder='.')	
 	files = dih.getAllFilesInAFolder(folder='.')
@@ -374,3 +417,25 @@ def upload_file():
 
 
 
+#function on btn submit id base pe table list insert select req table del reqemp
+
+# @roles_required('org')
+
+	# for role in current_user.roles:
+	# 	if role == adminRole or role == orgRole:
+	# 		req1 = empRequest.query.filter_by(orgname=current_user.username)
+	# 		newReq1 = []
+	# 		for rec in req1:
+	# 			e = User.query.filter_by(username=rec.empname).first()
+	# 			newReq1.append(e)
+	# 		print(newReq1)
+	# 		empl = empList(empname = req1.empname, orgname=req1.orgname)
+	# 		db.session.add(empl)
+	# 		db.session.commit()
+	# 		return render_template('org_dashboard.html', title='Dashboard',newReq = newReq1)
+
+		
+# 	abort(403)
+
+
+		

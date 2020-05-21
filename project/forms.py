@@ -25,7 +25,7 @@ class Org_RegistrationForm(FlaskForm):
 	
 class Emp_RegistrationForm(FlaskForm):
 	username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-	org_code = StringField('Orginization Code', validators=[DataRequired(), Length(min=1, max=10)])
+	org_code = StringField('Orginization Name', validators=[DataRequired(), Length(min=1, max=10)])
 	email = StringField('Email', validators=[DataRequired(),Email()])
 	password = PasswordField('Password', validators=[DataRequired()])
 	confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
