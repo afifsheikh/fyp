@@ -12,22 +12,6 @@ from functools import wraps
 # from flask_user import roles_required, UserManager
 
 
-# def login_required(role="ANY"):
-# 	def wrapper(fn):
-# 		@wraps(fn)
-# 		def decorated_view(*args, **kwargs):
-# 			if not current_user.is_authenticated:
-# 				return login_manager.unauthorized()
-# 			if ((current_user.role != role) and (role != "ANY")):
-# 				return login_manager.unauthorized()
-# 			return fn(*args, **kwargs)
-# 		return decorated_view	
-# 	wrapper.__name__ = fn.__name__
-	# return wrapper
-# Setup Flask-User and specify the User data-model
-# user_manager = UserManager(app, db, User)
-
-
 files = []
 dirs = []
 root_dir = ''
@@ -85,7 +69,7 @@ def EmpRegister():
 		emp.roles = [emp_role]
 		db.session.add(emp)
 		db.session.commit()
-		flash("You have been registerd as an Employee!", 'success')
+		flash("You have been registered Successfully. Please wait until you are approved!", 'success')
 		# else:
 		# 	flash("There Is no Such Organization", 'warning')
 		return redirect(url_for('login'))
@@ -139,6 +123,13 @@ def login():
 		user = User.query.filter_by(email=form.email.data).first()
 		
 		if user and bcrypt.check_password_hash(user.password, form.password.data):
+			if str(user.parent_org) != 'None':
+				print(user.parent_org)
+				print(user.parent_org != 'None')
+				emp = empList.query.filter_by(empname= user.username).first()
+				if not emp:
+					flash("Login Unsuccessful, Your Organization request has not been approved yet." , "warning")					
+					return render_template('login.html', title='Login', form=form)				
 			login_user(user, remember=form.remember.data)
 			next_page = request.args.get('next') #args is a dictionary we use get method so that if the next prameter dost not exits it gives none so dont use square brackets with the key
 			initUser()
@@ -190,7 +181,9 @@ def req_emp(empname,orgname):
 @login_required
 def del_emplist(en,on):
 	emp  = empList.query.filter_by(empname=en,orgname=on).first()
+	empReg  = User.query.filter_by(username=en,parent_org=on).first()
 	db.session.delete(emp)
+	db.session.delete(empReg)
 	db.session.commit()
 	return redirect(url_for('Dashboard'))
 
@@ -198,6 +191,8 @@ def del_emplist(en,on):
 @login_required
 def del_empreq(e,o):
 	emp  = empRequest.query.filter_by(empname=e,orgname=o).first()
+	empReg  = User.query.filter_by(username=e,parent_org=o).first()
+	db.session.delete(empReg)
 	db.session.delete(emp)
 	db.session.commit()
 	return redirect(url_for('Dashboard'))

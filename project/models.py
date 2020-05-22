@@ -73,7 +73,7 @@ class empList(db.Model):
 	orgname = db.Column(db.String(20), nullable=False)
 # print method
 	def __repr__(self):
-		return f"empRequest('{self.empname}', '{self.orgname}')"
+		return f"empList('{self.empname}', '{self.orgname}')"
 
 class Announcement(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -81,7 +81,7 @@ class Announcement(db.Model):
 	orgname = db.Column(db.String(20), unique=True, nullable=False)
 # print method
 	def __repr__(self):
-		return f"empRequest('{self.empname}', '{self.orgname}')"
+		return f"Announcements('{self.empname}', '{self.orgname}')"
 
 # class Folder(db.Model):
 # 	id = db.Column(db.Integer, primary_key=True)

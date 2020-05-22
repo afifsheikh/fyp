@@ -39,7 +39,10 @@ class Emp_RegistrationForm(FlaskForm):
 		user = User.query.filter_by(email=email.data).first()
 		if user:
 			raise ValidationError('Email is already taken. Please choose different one.')
-	
+	def validate_org_code(self, org_code):
+		user = User.query.filter_by(username=org_code.data).first()
+		if not user:
+			raise ValidationError('Invalid Organization.')
 
 class RegistrationForm(FlaskForm):
 	# DataRequired is for cumplusary fields
@@ -67,12 +70,11 @@ class LoginForm(FlaskForm):
 	userTpye = RadioField('User', choices=[('employee','Employee'),('organization','Organization')],default='employee', validators=[DataRequired()])
 	submit = SubmitField('Login')
 
-
 class UpdateAccountForm(FlaskForm):
 	# DataRequired is for cumplusary fields
 	username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
 	email = StringField('Email', validators=[DataRequired(),Email()])
-	picture = FileField('Update Profile Picture', validators = [FileAllowed(['jpg', 'png'])])
+	picture = FileField('Update Profile Picture', validators = [FileAllowed(['jpg', 'png', 'jpeg'])])
 	submit = SubmitField('Update')
 
 	def validate_username(self, username):
