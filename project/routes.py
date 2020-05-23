@@ -181,7 +181,9 @@ def req_emp(empname,orgname):
 @login_required
 def del_emplist(en,on):
 	emp  = empList.query.filter_by(empname=en,orgname=on).first()
+	user = User.query.filter_by(username=en).first()
 	empReg  = User.query.filter_by(username=en,parent_org=on).first()
+	db.session.delete(user)
 	db.session.delete(emp)
 	db.session.delete(empReg)
 	db.session.commit()
@@ -192,6 +194,8 @@ def del_emplist(en,on):
 def del_empreq(e,o):
 	emp  = empRequest.query.filter_by(empname=e,orgname=o).first()
 	empReg  = User.query.filter_by(username=e,parent_org=o).first()
+	user = User.query.filter_by(username = e).first()
+	db.session.delete(user)
 	db.session.delete(empReg)
 	db.session.delete(emp)
 	db.session.commit()
