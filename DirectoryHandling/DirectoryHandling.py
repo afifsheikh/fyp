@@ -36,9 +36,12 @@ class dirHandling:
     def getCurrentDirectory(self):
         return os.getcwd()
 
-    def getRootDir(self, userName):
+    def getRootDir(self, userName, parent):
         """also creates the designated root folder with the name of the given username"""
-        self.rootdir = os.getcwd() + '/Users/root_' + userName;
+        if str(parent) == 'None':
+            self.rootdir = os.getcwd() + '/Users/root_' + userName
+        else:
+            self.rootdir = os.getcwd() + '/Users/root_' + parent + '/root_' + userName
         self.createFolder(self.rootdir)
         return self.rootdir
 

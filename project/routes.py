@@ -288,10 +288,11 @@ def initUser():
 	# yahan pe check kro k current_user.role == 'employee' to phr
 	# rootFolder =  current_user.parent . '/' . current_user.username;
 	
-
-	root_dir = dih.getRootDir(userName=current_user.username)	
+	print(f'praent naem: {current_user.parent_org}')
+	root_dir = dih.getRootDir(userName=current_user.username, parent=current_user.parent_org)	
 	dirs = dih.getAllFoldersInAFolder(folder='.')	
 	files = dih.getAllFilesInAFolder(folder='.')
+	print(f'root_dir: {root_dir}')
 	return [root_dir,dirs,files]
 	# flash(dirs)
 # def initOrg():
@@ -316,7 +317,7 @@ def drive():
 							cur_folder = folder, prev_folder = "")
 
 def searchFolder(folder):
-	root_dir = dih.getRootDir(userName=current_user.username)	
+	root_dir = dih.getRootDir(userName=current_user.username, parent=current_user.parent_org)	
 	dirs = dih.getAllFoldersInAFolder(folder='./' + folder)	
 	files = dih.getAllFilesInAFolder(folder='./' + folder)
 	return [root_dir,dirs,files]
@@ -391,7 +392,8 @@ def downloadFile(abspath):
 
 
 def getDest(file):
-	root_dir = dih.getRootDir(userName=current_user.username)	
+	print(current_user.parent_org)
+	root_dir = dih.getRootDir(userName=current_user.username, parent=current_user.parent_org)	
 	destPath = dih.getDestinationPath(file=file)	
 	return destPath
 
@@ -413,6 +415,8 @@ def upload_file():
 			flash('Invalid File!', 'danger')
 
 	return redirect(url_for('drive'))
+
+
 
 
 
