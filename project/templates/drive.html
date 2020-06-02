@@ -20,7 +20,7 @@
 {% if cur_folder == 'drive' %}
 >>{{cur_folder}}
 	{% else %}
->><a href="{{ url_for('subFolder', name=prev_folder) }}">{{prev_folder}}/</a>{{cur_folder}}
+>><a href="{{ url_for('subFolder', name=prev_folder) }}">{{prev_folder.replace('root_','')}}/</a>{{cur_folder.replace('root_','')}}
 {% endif %}
 
 <div class = 'row'>
@@ -35,7 +35,7 @@
 				<a href="{{ url_for('subFolder', name= cur_folder + '/' + d) }}">
 			    <img class= '' src="{{ image_folder }}">
 			</a>
-		    <h2><a class="article-title" href="{{ url_for('subFolder', name=cur_folder + '/' + d) }}">{{ d }}</a></h2>
+		    <h2><a class="article-title" href="{{ url_for('subFolder', name=cur_folder + '/' + d) }}">{{ d.replace('root_','') }}</a></h2>
 		    <p class="article-content"></p>	    		    
 			  </div>
 		</article>
