@@ -56,7 +56,7 @@
 		  <div class="media-body">
 		    <div class="article-metadata">
 		      <a class="mr-2" href="#">FILE</a>
-		      <small class="text-muted">DELETE</small>
+		      <a href="{{ url_for('delete_file', abspath= cur_folder + '/' + f) }}"><small class="text-muted">DELETE</small></a>
 		    </div>
 		    <a href="{{ url_for('downloadFile', abspath= cur_folder + '/' + f) }}" target="blank">
 			    <img class= '' src="{{ image_file }}">

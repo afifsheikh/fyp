@@ -418,27 +418,22 @@ def upload_file():
 
 
 
-
-
-#function on btn submit id base pe table list insert select req table del reqemp
-
-# @roles_required('org')
-
-	# for role in current_user.roles:
-	# 	if role == adminRole or role == orgRole:
-	# 		req1 = empRequest.query.filter_by(orgname=current_user.username)
-	# 		newReq1 = []
-	# 		for rec in req1:
-	# 			e = User.query.filter_by(username=rec.empname).first()
-	# 			newReq1.append(e)
-	# 		print(newReq1)
-	# 		empl = empList(empname = req1.empname, orgname=req1.orgname)
-	# 		db.session.add(empl)
-	# 		db.session.commit()
-	# 		return render_template('org_dashboard.html', title='Dashboard',newReq = newReq1)
-
-		
-# 	abort(403)
-
-
+@app.route("/drive/delete/<path:abspath>", methods=['GET'])
+@login_required
+def delete_file(abspath):
+	info = searchFolder(abspath)
+	root_dir = info[0]
+	files = info[2]
+	dirs = info[1]
+	path = root_dir + '\\'+abspath
+	filename = path_leaf(abspath)
+	path = path.replace('\\','/')
+	print('path',path)
+	print('filename',filename)
+	if os.path.exists(path):
+		os.remove(path)
+		flash(f'{filename} Deleted!', 'success')
+	else:
+		flash('Invalid File!', 'danger')
+	return redirect(url_for('drive'))
 		
