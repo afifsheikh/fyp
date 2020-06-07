@@ -20,12 +20,12 @@
       {{ form.hidden_tag() }}
       <fieldset class="form-group">
         <legend class="border-bottom mb-4"> Account Info </legend>
-        <div class="form-group"> 
-          <label for="">Parent Organization</label>
-          {% if current_user.parent_org != 'None'%}
-            <input type="text" name="parent_org" id="" value=>
-          {% endif %}
-        </div>
+        {% if current_user.parent_org|string != 'None'%}
+          <div class="form-group"> 
+            <label for="parentOrg" class="text-secondary lead">Organization: </label>
+            <span id="parentOrg" class="text-info text-uppercase">{{ current_user.parent_org }}</span>
+          </div>
+        {% endif %}
         <div class="form-group">
           {{ form.username.label(class="form-control-label") }}
           {% if form.username.errors %}

@@ -168,6 +168,7 @@ def del_emplist(en,on):
 	db.session.delete(emp)
 	db.session.delete(empReg)
 	db.session.commit()
+	# delete_directory('root_'+en,1) # uncomment this line to also remove the directory of the employee
 	return redirect(url_for('Dashboard'))
 
 @app.route("/requestdelete/<string:e>/<string:o>")
