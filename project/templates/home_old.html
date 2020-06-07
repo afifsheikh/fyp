@@ -1,95 +1,130 @@
 
-{% extends "layout.html" %}
-      {% block content %}
 
+
+<html>
+  <head>
     <title>home</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-
-<style>
-body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
-body {font-size: 16px;}
-img {margin-bottom: -8px;}
-.mySlides {display: none;}
-
-/* #banner{
-  width: 100%;
-  height: 10vh !important;
-}
-
-@media only screen and (max-width: 600px) {
-  
-} */
-</style>
-
-      
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
     
+    <style>
+    body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+    body {font-size: 16px;}
+    img {margin-bottom: -8px;}
+    .mySlides {display: none;}
+    
+    /* #banner{
+      width: 100%;
+      height: 10vh !important;
+    }
+    
+    @media only screen and (max-width: 600px) {
       
-      <div class="w3-display-container w3-center"> 
-        <button class="w3-button w3-block w3-blue w3-hide-large w3-hide-medium" onclick="document.getElementById('download').style.display='block'">Get Started  <i class="fa fa-android"></i> <i class="fa fa-apple"></i> <i class="fa fa-windows"></i></button>
-        <div class="mySlides w3-animate-opacity">
-          <img  src="\static\assets\images\backgroundimg\nano.jpg" alt="Image 1" width="1500" height="400">
-          <div class="w3-display-left w3-padding w3-hide-small" style="width:35%">
-            <div class="w3-black w3-opacity w3-hover-opacity-off w3-padding-large w3-round-large">
-              <h1 class="w3-xlarge">Welcome to ACF</h1>
-              <hr class="w3-opacity">
-              <p>Available on every platform</p>
-              <p><button class="w3-button w3-block w3-blue w3-round" onclick="document.getElementById('download').style.display='block'">Get Started  <i class="fa fa-android"></i> <i class="fa fa-apple"></i> <i class="fa fa-windows"></i></button></p>
-            </div>
+    } */
+    </style>
+  </head>
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+	    <div class="container">
+	      <a class="navbar-brand mr-4" href="/">ACF</a>
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="navbar-toggler-icon"></span>
+	      </button>
+	      <div class="collapse navbar-collapse" id="navbarToggle">
+	        <div class="navbar-nav mr-auto">
+	          <a class="nav-item nav-link" href="{{ url_for('home')}}">Home</a>
+	          <a class="nav-item nav-link" href="{{ url_for('about')}}">About</a>
+	        </div>
+	        <!-- Navbar Right Side -->
+	        <div class="navbar-nav">
+  		        {% if current_user.is_authenticated %}
+	  		        <a class="nav-item nav-link" href="{{ url_for('drive')}}">Drive</a>
+	  		        <a class="nav-item nav-link" href="{{ url_for('new_post')}}">New Post</a>
+					<a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+		    		<a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+				
+					{% if 'Admin' == current_user.roles[0].name or 'org' == current_user.roles[0].name %}
+		    			<a class="nav-item nav-link" href="{{ url_for('Dashboard') }}">Dashbord</a>
+					{% endif %}
+				{% else %}
+				  <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+		          <a class="nav-item nav-link" href="{{ url_for('EmpRegister') }}">Register</a>
+				{% endif %}
+	        </div>
+	      </div>
+	    </div>
+	  </nav>
+  </header>
+  <body>
+    <div class="w3-display-container w3-center"> 
+      <button class="w3-button w3-block w3-blue w3-hide-large w3-hide-medium" onclick="document.getElementById('download').style.display='block'">Get Started  <i class="fa fa-android"></i> <i class="fa fa-apple"></i> <i class="fa fa-windows"></i></button>
+      <div class="mySlides w3-animate-opacity">
+        <img  src="\static\assets\images\backgroundimg\nano.jpg" alt="Image 1" width="1500" height="400">
+        <div class="w3-display-left w3-padding w3-hide-small" style="width:35%">
+          <div class="w3-black w3-opacity w3-hover-opacity-off w3-padding-large w3-round-large">
+            <h1 class="w3-xlarge">Welcome to ACF</h1>
+            <hr class="w3-opacity">
+            <p>Available on every platform</p>
+            <p><button class="w3-button w3-block w3-blue w3-round" onclick="document.getElementById('download').style.display='block'">Get Started  <i class="fa fa-android"></i> <i class="fa fa-apple"></i> <i class="fa fa-windows"></i></button></p>
           </div>
         </div>
-        <div class="mySlides w3-animate-opacity">
-          <img src="\static\assets\images\backgroundimg\earth.jpg" alt="Image 2" width="1500" height="400">
-          <div class="w3-display-left w3-padding w3-hide-small" style="width:35%">
-            <div class="w3-black w3-opacity w3-hover-opacity-off w3-padding-large w3-round-large">
-              <h1 class="w3-xlarge w3-text-red"><b>CLICK!</b> Fast and Easy</h1>
-              <hr class="w3-opacity">
-              <p>Choose from thousands of features</p>
-              <p><button class="w3-button w3-block w3-red w3-round" onclick="document.getElementById('download').style.display='block'">Get Started  <i class="fa fa-android"></i> <i class="fa fa-apple"></i> <i class="fa fa-windows"></i></button></p>
-            </div>
-          </div>
-        </div>
-        <div class="mySlides w3-animate-opacity">
-          <img src="\static\assets\images\backgroundimg\blue.jpg" alt="Image 3"  width="1500" height="400">
-          <div class="w3-display-left w3-padding w3-hide-small" style="width:35%">
-            <div class="w3-black w3-opacity w3-hover-opacity-off w3-padding-large w3-round-large">
-              <h1 class="w3-xlarge">Smart Design</h1>
-              <hr class="w3-opacity">
-              <p>Customize photos as you go</p>
-              <p><button class="w3-button w3-block w3-indigo w3-round" onclick="document.getElementById('download').style.display='block'">Get Started <i class="fa fa-android"></i> <i class="fa fa-apple"></i> <i class="fa fa-windows"></i></button></p>
-            </div>
-          </div>
-        </div>
-        <a class="w3-button w3-black w3-display-right w3-margin-right w3-round w3-hide-small w3-hover-light-grey" onclick="plusDivs(1)">Take Tour <i class="fa fa-angle-right"></i></a>
-        <a class="w3-button w3-block w3-black w3-hide-large w3-hide-medium" onclick="plusDivs(1)">Take Tour <i class="fa fa-angle-right"></i></a>
       </div>
+      <div class="mySlides w3-animate-opacity">
+        <img src="static\assets\images\backgroundimg\earth.jpg" alt="Image 2" width="1500" height="400">
+        <div class="w3-display-left w3-padding w3-hide-small" style="width:35%">
+          <div class="w3-black w3-opacity w3-hover-opacity-off w3-padding-large w3-round-large">
+            <h1 class="w3-xlarge w3-text-red"><b>CLICK!</b> Fast and Easy</h1>
+            <hr class="w3-opacity">
+            <p>Choose from thousands of features</p>
+            <p><button class="w3-button w3-block w3-red w3-round" onclick="document.getElementById('download').style.display='block'">Get Started  <i class="fa fa-android"></i> <i class="fa fa-apple"></i> <i class="fa fa-windows"></i></button></p>
+          </div>
+        </div>
+      </div>
+      <div class="mySlides w3-animate-opacity">
+        <img src="\static\assets\images\backgroundimg\blue.jpg" alt="Image 3"  width="1500" height="400">
+        <div class="w3-display-left w3-padding w3-hide-small" style="width:35%">
+          <div class="w3-black w3-opacity w3-hover-opacity-off w3-padding-large w3-round-large">
+            <h1 class="w3-xlarge">Smart Design</h1>
+            <hr class="w3-opacity">
+            <p>Customize photos as you go</p>
+            <p><button class="w3-button w3-block w3-indigo w3-round" onclick="document.getElementById('download').style.display='block'">Get Started <i class="fa fa-android"></i> <i class="fa fa-apple"></i> <i class="fa fa-windows"></i></button></p>
+          </div>
+        </div>
+      </div>
+      <a class="w3-button w3-black w3-display-right w3-margin-right w3-round w3-hide-small w3-hover-light-grey" onclick="plusDivs(1)">Take Tour <i class="fa fa-angle-right"></i></a>
+      <a class="w3-button w3-block w3-black w3-hide-large w3-hide-medium" onclick="plusDivs(1)">Take Tour <i class="fa fa-angle-right"></i></a>
+    </div>
+    
+    <script>
+      // Slideshow
+      var slideIndex = 1;
+      showDivs(slideIndex);
       
-      <script>
-        // Slideshow
-        var slideIndex = 1;
-        showDivs(slideIndex);
-        
-        function plusDivs(n) {
-          showDivs(slideIndex += n);
+      function plusDivs(n) {
+        showDivs(slideIndex += n);
+      }
+      
+      function showDivs(n) {
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+        if (n > x.length) {slideIndex = 1}
+        if (n < 1) {slideIndex = x.length}
+        for (i = 0; i < x.length; i++) {
+          x[i].style.display = "none";  
         }
-        
-        function showDivs(n) {
-          var i;
-          var x = document.getElementsByClassName("mySlides");
-          if (n > x.length) {slideIndex = 1}
-          if (n < 1) {slideIndex = x.length}
-          for (i = 0; i < x.length; i++) {
-            x[i].style.display = "none";  
-          }
-          x[slideIndex-1].style.display = "block";  
-        }
-        </script>
+        x[slideIndex-1].style.display = "block";  
+      }
+      </script>
+  </body>
+</html>
+      
     
-    
+      
 
-{% endblock content %}
+    
+    
