@@ -1,5 +1,6 @@
 import ntpath
 import os
+import shutil
 import secrets
 from DirectoryHandling import DirectoryHandling as dh
 from PIL import Image
@@ -100,26 +101,6 @@ def login():
 		return redirect(url_for('home'))
 	form = LoginForm()
 	if form.validate_on_submit():
-		# usertype = form.userTpye.data
-		# if usertype == 'employee':
-		# 	emp = Employee.query.filter_by(email=form.email.data).first()
-		# 	if emp and bcrypt.check_password_hash(emp.password, form.password.data):
-		# 		print(emp)
-		# 		login_user(emp, remember=form.remember.data)
-		# 		next_page = request.args.get('next') #args is a dictionary we use get method so that if the next prameter dost not exits it gives none so dont use square brackets with the key
-		# 		initUser()
-		# 		flash("Login Successful " + current_user.username , "success")
-		# 		return redirect(next_page) if next_page else redirect(url_for('home')) # this is done so that if login page is directed from a restricted page then after login it redirects to that page instead of home page
-			
-		# elif usertype == 'organization':
-		# 	org = Organization.query.filter_by(email=form.email.data).first()
-		# 	if org and bcrypt.check_password_hash(org.password, form.password.data):
-		# 		login_user(org, remember=form.remember.data)
-		# 		next_page = request.args.get('next') #args is a dictionary we use get method so that if the next prameter dost not exits it gives none so dont use square brackets with the key
-		# 		initOrg()
-		# 		flash("Login Successful" , "success")
-		# 		return redirect(next_page) if next_page else redirect(url_for('home')) # this is done so that if login page is directed from a restricted page then after login it redirects to that page instead of home page
-		# else:
 		user = User.query.filter_by(email=form.email.data).first()
 		
 		if user and bcrypt.check_password_hash(user.password, form.password.data):
@@ -418,7 +399,7 @@ def upload_file():
 
 
 
-@app.route("/drive/delete/<path:abspath>", methods=['GET'])
+@app.route("/drive/deleteFile/<path:abspath>", methods=['GET'])
 @login_required
 def delete_file(abspath):
 	info = searchFolder(abspath)
@@ -436,4 +417,33 @@ def delete_file(abspath):
 	else:
 		flash('Invalid File!', 'danger')
 	return redirect(url_for('drive'))
-		
+
+
+@app.route("/drive/deleteDir/<path:abspath>/<int:delt>", methods=['GET'])
+@login_required
+def delete_directory(abspath,delt):
+	info = searchFolder(abspath)
+	root_dir = info[0]
+	files = info[2]
+	dirs = info[1]
+	path = root_dir + '\\'+abspath
+	path = path.replace('\\','/')
+	dname = os.path.basename(os.path.dirname(path))
+	print('path',path)
+	print('dname',dname)
+	if os.path.isdir(path):
+		if(delt == 1):
+			try:
+				shutil.rmtree(path)
+			except OSError as e:
+				flash("Error: %s : %s" % (dname, e.strerror), 'danger')
+		else:
+			try:
+				os.rmdir(path)
+			except OSError  as e:
+				flash("Error: %s : %s" % (dname, e.strerror) ,'warning')
+				return redirect(url_for('drive'))
+		flash(f'{dname} Deleted!', 'success')
+	else:
+		flash('Invalid Directory or Directory does not exists!', 'danger')
+	return redirect(url_for('drive'))
