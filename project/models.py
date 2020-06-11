@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
 	email = db.Column(db.String(120), unique=True, nullable=False)
 	image_file = db.Column(db.String(20), nullable=False, default='default.png')
 	password = db.Column(db.String(60), nullable=False)
-	parent_org = db.Column(db.String(20), unique=True, nullable=True)
+	parent_org = db.Column(db.String(20), nullable=True)
 	roles = db.relationship('Role', secondary='user_roles')
 	posts = db.relationship('Post', backref='author', lazy=True)
 
@@ -57,7 +57,31 @@ class UserRoles(db.Model):
 	def __repr__(self):
 		return f"UserRoles('{self.user_id}', '{self.role_id}')"
 
+class empRequest(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	empname = db.Column(db.String(20), nullable=False)
+	orgname = db.Column(db.String(20), nullable=False)
+# print method
+	def __repr__(self):
+		return f"empRequest('{self.empname}', '{self.orgname}')"
 
+
+
+class empList(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	empname = db.Column(db.String(20), nullable=False)
+	orgname = db.Column(db.String(20), nullable=False)
+# print method
+	def __repr__(self):
+		return f"empList('{self.empname}', '{self.orgname}')"
+
+class Announcement(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	message = db.Column(db.String(20), unique=True, nullable=False)
+	orgname = db.Column(db.String(20), unique=True, nullable=False)
+# print method
+	def __repr__(self):
+		return f"Announcements('{self.empname}', '{self.orgname}')"
 
 # class Folder(db.Model):
 # 	id = db.Column(db.Integer, primary_key=True)
