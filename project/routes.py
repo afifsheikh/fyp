@@ -24,7 +24,7 @@ dih = dh.dirHandling()
 @app.route("/home")
 def home():
 	if current_user.is_authenticated:
-		print(current_user)
+		return redirect(url_for('account'))
 	posts = Post.query.all()
 	return render_template('home.html', posts=posts)
 
