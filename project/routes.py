@@ -9,7 +9,6 @@ from project import app, db, bcrypt, login_manager
 from project.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, Emp_RegistrationForm, Org_RegistrationForm
 from project.models import User, Post, Role, empRequest, empList
 from flask_login import login_user, current_user, logout_user, login_required
-from functools import wraps
 # from flask_user import roles_required, UserManager
 
 
@@ -266,29 +265,17 @@ def delete_post(post_id):
 
 
 def initUser():
-	# Organization me ye org_name hy
-	# yahan pe check kro k current_user.role == 'employee' to phr
-	# rootFolder =  current_user.parent . '/' . current_user.username;
-	
 	print(f'praent naem: {current_user.parent_org}')
 	root_dir = dih.getRootDir(userName=current_user.username, parent=current_user.parent_org)	
 	dirs = dih.getAllFoldersInAFolder(folder='.')	
 	files = dih.getAllFilesInAFolder(folder='.')
 	print(f'root_dir: {root_dir}')
 	return [root_dir,dirs,files]
-	# flash(dirs)
-# def initOrg():
-# 	# Organization me ye org_name hy
-# 	root_dir = dih.getRootDir(userName=current_user.organization_name)	
-# 	dirs = dih.getAllFoldersInAFolder(folder='.')	
-# 	files = dih.getAllFilesInAFolder(folder='.')
-# 	return [root_dir,dirs,files]
 
 @app.route("/drive/")
 @login_required
 def drive():
 	folder_icon = url_for('static', filename='driveIcons/folderIcon.png' )
-	# file_icon = url_for('static', filename='driveIcons/document.png')
 	
 	file_icon = getFolderIcon()
 	info = initUser()
@@ -432,19 +419,24 @@ def delete_directory(abspath,delt):
 	dname = os.path.basename(os.path.dirname(path))
 	print('path',path)
 	print('dname',dname)
-	if os.path.isdir(path):
-		if(delt == 1):
-			try:
-				shutil.rmtree(path)
-			except OSError as e:
-				flash("Error: %s : %s" % (dname, e.strerror), 'danger')
-		else:
-			try:
-				os.rmdir(path)
-			except OSError  as e:
-				flash("Error: %s : %s" % (dname, e.strerror) ,'warning')
-				return redirect(url_for('drive'))
-		flash(f'{dname} Deleted!', 'success')
-	else:
-		flash('Invalid Directory or Directory does not exists!', 'danger')
+	isDeleted = dih.deleteFolder(path, hard = delt)
+	if (isDeleted != True):
+		flash(isDeleted, 'danger')
+		return redirect(url_for('drive'))
+	flash(f'Folder Deleted!', 'success')
 	return redirect(url_for('drive'))
+	# if os.path.isdir(path):
+	# 	if(delt == 1):
+	# 		try:
+	# 			shutil.rmtree(path)
+	# 		except OSError as e:
+	# 			flash("Error: %s : %s" % (dname, e.strerror), 'danger')
+	# 	else:
+	# 		try:
+	# 			os.rmdir(path)
+	# 		except OSError  as e:
+	# 			flash("Error: %s : %s" % (dname, e.strerror) ,'warning')
+	# 			return redirect(url_for('drive'))
+	# 	flash(f'{dname} Deleted!', 'success')
+	# else:
+	# 	flash('Invalid Directory or Directory does not exists!', 'danger')
