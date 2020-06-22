@@ -4,7 +4,7 @@ metadata:
   name: fyp-service
   namespace: default
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     run: fyp
   ports:
