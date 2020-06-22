@@ -47,7 +47,7 @@ class dirHandling:
                     # return redirect(url_for('drive'))
             return True
         else:
-            flash('Invalid Directory or Directory does not exists!', 'danger')
+            return('Invalid Directory or Directory does not exists!')
     def getCurrentDirectory(self):
         return os.getcwd()
 

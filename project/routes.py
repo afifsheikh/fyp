@@ -425,6 +425,7 @@ def delete_directory(abspath,delt):
 		return redirect(url_for('drive'))
 	flash(f'Folder Deleted!', 'success')
 	return redirect(url_for('drive'))
+	
 	# if os.path.isdir(path):
 	# 	if(delt == 1):
 	# 		try:
@@ -440,3 +441,8 @@ def delete_directory(abspath,delt):
 	# 	flash(f'{dname} Deleted!', 'success')
 	# else:
 	# 	flash('Invalid Directory or Directory does not exists!', 'danger')
+
+def goBack(default = 'account'):
+	return request.args.get('next') or \
+           request.referrer or \
+           url_for(default)

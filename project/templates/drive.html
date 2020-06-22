@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="bg-light border border-1">
-	<div class = "bg-light p-3">
+	<div class = "bg-light p-3 border-bottom">
 		<h2 class="text-info">Upload Files</h2>
 	</div>
 	<div class = "bg-white p-4">
@@ -36,11 +36,14 @@
 	
 
 {% if cur_folder == 'drive' %}
->>{{cur_folder}}
-	{% else %}
->><a href="{{ url_for('subFolder', name=prev_folder) }}">{{prev_folder.replace('root_','')}}/</a>{{cur_folder.replace('root_','')}}
+{% else %}
+	{% set p = [prev_folder.replace('root_','').replace('.','') , cur_folder.replace('root_','')] %}
+	{% set sep = '/' %}
+	{% set p = sep.join(p) %}
+	<!-- >><a href="{{ url_for('subFolder', name=prev_folder) }}">{{prev_folder.replace('root_','').replace('.','')}}/</a>{{cur_folder.replace('root_','')}} -->
+	
 {% endif %}
-
+<span class="text-muted m-2"> {{ p }} </span>
 <div class = 'row'>
 	{% for d in dirs %}
 	<div class="col-sm-6">
@@ -74,9 +77,6 @@
 	{% endfor %}		
 </div>
 
-<hr>
-<hr>
-	
 
 <div class = 'row'>
 	{% for f in files %}
@@ -92,7 +92,7 @@
 				  {{ f.replace('root_','') }}
 				</a>
 			</h5>
-			<a href="_for('delete_file', abspath= cur_folder + '/' + f) }}" class="btn btn-danger">
+			<a href="{{ url_for('delete_file', abspath= cur_folder + '/' + f) }}" class="btn btn-danger">
 				  Delete
 				  <svg class="bi bi-file-minus" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 					<path d="M9 1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8h-1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h5V1z"/>
