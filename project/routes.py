@@ -31,12 +31,6 @@ def home():
 def about():
 	return render_template('about.html', title='About')
 
-# @app.route("/admin")
-# def admin():
-# 	return render_template('adminsite/html/index.html')
-
-
-# folder = 'pdf'
 @app.route("/OrgRegister", methods=['GET', 'POST'])
 def OrginizationRegister():
 	if current_user.is_authenticated:
@@ -60,9 +54,7 @@ def EmpRegister():
 	form = Emp_RegistrationForm()
 	if form.validate_on_submit():
 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-		#org_chk = User.query.filter_by(username=form.org_code.data).first()
 		emp = User(username=form.username.data, email=form.email.data, password=hashed_password, parent_org=form.org_code.data)
-		#if form.org_code.data = org_chk.username:
 		empreq = empRequest(empname=form.username.data, orgname=form.org_code.data) 
 		db.session.add(empreq)
 		emp_role = Role.query.filter_by(name='emp').first()
@@ -70,8 +62,6 @@ def EmpRegister():
 		db.session.add(emp)
 		db.session.commit()
 		flash("You have been registered Successfully. Please wait until you are approved!", 'success')
-		# else:
-		# 	flash("There Is no Such Organization", 'warning')
 		return redirect(url_for('login'))
 	return render_template('emp_registration.html', title='Register', form=form)
 
@@ -84,8 +74,6 @@ def register():
 	if form.validate_on_submit():
 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
 		user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-		# admin = Role.query.filter_by(name='org').first()
-		# user.roles = [admin]
 		db.session.add(user)
 		db.session.commit()
 		flash("Your account has been created! You are now able to log in", 'success')
@@ -104,8 +92,6 @@ def login():
 		
 		if user and bcrypt.check_password_hash(user.password, form.password.data):
 			if str(user.parent_org) != 'None':
-				print(user.parent_org)
-				print(user.parent_org != 'None')
 				emp = empList.query.filter_by(empname= user.username).first()
 				if not emp:
 					flash("Login Unsuccessful, Your Organization request has not been approved yet." , "warning")					
@@ -126,7 +112,6 @@ def logout():
 
 @app.route("/Dashboard")
 @login_required
-# @roles_required('org')
 def Dashboard():
 	adminRole = Role.query.filter_by(name='Admin').first() #selection
 	orgRole = Role.query.filter_by(name='org').first()
@@ -137,13 +122,11 @@ def Dashboard():
 			for rec in req:
 				e = User.query.filter_by(username=rec.empname).first()
 				newReq.append(e)
-			# employee List 
 			emplst = empList.query.filter_by(orgname=current_user.username).all()
 			newEmpLst = []
 			for rec in emplst:
 				e = User.query.filter_by(username=rec.empname).first()
 				newEmpLst.append(e)
-			print(f'LIST : {newEmpLst}')
 			return render_template('org_dashboard.html', title='Dashboard',req = newReq, emplst = newEmpLst) 
 		
 	abort(403)
@@ -209,7 +192,6 @@ def account():
 		flash('Your Account has been Successfully Updated!', 'success')
 		return redirect(url_for('account'))
 	elif request.method == 'GET':
-		print(current_user)
 		form.username.data = current_user.username
 		form.email.data = current_user.email
 	image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
@@ -265,11 +247,9 @@ def delete_post(post_id):
 
 
 def initUser():
-	print(f'praent naem: {current_user.parent_org}')
 	root_dir = dih.getRootDir(userName=current_user.username, parent=current_user.parent_org)	
 	dirs = dih.getAllFoldersInAFolder(folder='.')	
 	files = dih.getAllFilesInAFolder(folder='.')
-	print(f'root_dir: {root_dir}')
 	return [root_dir,dirs,files]
 
 @app.route("/drive/")
@@ -290,11 +270,8 @@ def searchFolder(folder):
 	dirs = dih.getAllFoldersInAFolder(folder='./' + folder)	
 	files = dih.getAllFilesInAFolder(folder='./' + folder)
 	return [root_dir,dirs,files]
-	# flash(dirs)
 
 def getFolderIcon():
-	# random_hex = secrets.token_hex(8)
-	# _, f_ext = os.path.splitext(icon.filename)
 	path = url_for('static', filename='driveIcons/document.png')
 	picture_path =  os.getcwd() + '/project' + path	
 	outputsize = (100,100)
@@ -313,12 +290,8 @@ def subFolder(name):
 		name = '.'
 	else:
 		name = name.replace('drive/', '')
-	# name = name.replace('drive', '')
-
 	folder_icon = url_for('static', filename='driveIcons/folderIcon.png' )
 	file_icon = url_for('static', filename='driveIcons/document.png')
-	# folder_icon = getFolderIcon(icon = folder_icon)
-	# file_icon = getFolderIcon()	
 	info = searchFolder(name)
 	files = info[2]
 	dirs = info[1]
@@ -333,35 +306,15 @@ def path_leaf(path):
 @app.route("/downloadFile/<path:abspath>", methods=['GET'])
 @login_required
 def downloadFile(abspath):
-	print(abspath)
-	# root_dir,dirs,files = searchFolder(abspath)
 	info = searchFolder(abspath)
 	root_dir = info[0]
-	files = info[2]
-	dirs = info[1]
-	print(f'userName:{root_dir}, dirs: {dirs}, files{files}')
-	
 	path = root_dir + '\\'+abspath
 	filename = path_leaf(abspath)
-	# filename = os.path.splitext(abspath)[0]
-	# ext = os.path.splitext(abspath)[1]
-	# path = "Users\\root_admin686\\textFiles\\README.TXT"
-	# filename = path_leaf(name)
 	path = path.replace('\\','/')
 	
-	print('path',path)
-	print('filename',filename)
 	return send_file(path, attachment_filename=filename, as_attachment=True)
-	# return send_from_directory(directory=path, filename='README.TXT', as_attachment=True)
-
-# @app.route("/upload_file")
-# @login_required
-# def upload():
-# 	return render_template('uploadFile.html', title='upload file')
-
 
 def getDest(file):
-	print(current_user.parent_org)
 	root_dir = dih.getRootDir(userName=current_user.username, parent=current_user.parent_org)	
 	destPath = dih.getDestinationPath(file=file)	
 	return destPath
@@ -370,14 +323,10 @@ def getDest(file):
 @login_required
 def upload_file():
 	for file in request.files.getlist("file"):
-		print(file)
 		filename = file.filename
 		if dih.validateFile(filename):
 			destination = getDest(file=filename) + '/'+ filename
 			print(destination)
-			# if os.path.isfile(destination):
-			# 	flash('File already Exists!', 'success')
-			# 	return redirect(url_for('drive'))
 			file.save(destination)
 			flash('File(s) Uploaded!', 'success')
 		else:
@@ -412,8 +361,6 @@ def delete_file(abspath):
 def delete_directory(abspath,delt):
 	info = searchFolder(abspath)
 	root_dir = info[0]
-	files = info[2]
-	dirs = info[1]
 	path = root_dir + '\\'+abspath
 	path = path.replace('\\','/')
 	dname = os.path.basename(os.path.dirname(path))
