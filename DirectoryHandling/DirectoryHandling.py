@@ -32,7 +32,22 @@ class dirHandling:
     def createFolder(self, path):
         if not os.path.exists(path):
             os.makedirs(path)
-
+    def deleteFolder(self, path, hard = 0):
+        if os.path.isdir(path):
+            if(hard == 1):
+                try:
+                    sh.rmtree(path)
+                except OSError as e:
+                    return (f"Error: {e.strerror}")    
+            else:
+                try:
+                    os.rmdir(path)
+                except OSError  as e:
+                    return (f"Error: {e.strerror}")
+                    # return redirect(url_for('drive'))
+            return True
+        else:
+            return('Invalid Directory or Directory does not exists!')
     def getCurrentDirectory(self):
         return os.getcwd()
 
