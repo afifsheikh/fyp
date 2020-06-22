@@ -9,7 +9,6 @@ from project import app, db, bcrypt, login_manager
 from project.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, Emp_RegistrationForm, Org_RegistrationForm
 from project.models import User, Post, Role, empRequest, empList
 from flask_login import login_user, current_user, logout_user, login_required
-from functools import wraps
 # from flask_user import roles_required, UserManager
 
 
@@ -367,19 +366,30 @@ def delete_directory(abspath,delt):
 	dname = os.path.basename(os.path.dirname(path))
 	print('path',path)
 	print('dname',dname)
-	if os.path.isdir(path):
-		if(delt == 1):
-			try:
-				shutil.rmtree(path)
-			except OSError as e:
-				flash("Error: %s : %s" % (dname, e.strerror), 'danger')
-		else:
-			try:
-				os.rmdir(path)
-			except OSError  as e:
-				flash("Error: %s : %s" % (dname, e.strerror) ,'warning')
-				return redirect(url_for('drive'))
-		flash(f'{dname} Deleted!', 'success')
-	else:
-		flash('Invalid Directory or Directory does not exists!', 'danger')
+	isDeleted = dih.deleteFolder(path, hard = delt)
+	if (isDeleted != True):
+		flash(isDeleted, 'danger')
+		return redirect(url_for('drive'))
+	flash(f'Folder Deleted!', 'success')
 	return redirect(url_for('drive'))
+	
+	# if os.path.isdir(path):
+	# 	if(delt == 1):
+	# 		try:
+	# 			shutil.rmtree(path)
+	# 		except OSError as e:
+	# 			flash("Error: %s : %s" % (dname, e.strerror), 'danger')
+	# 	else:
+	# 		try:
+	# 			os.rmdir(path)
+	# 		except OSError  as e:
+	# 			flash("Error: %s : %s" % (dname, e.strerror) ,'warning')
+	# 			return redirect(url_for('drive'))
+	# 	flash(f'{dname} Deleted!', 'success')
+	# else:
+	# 	flash('Invalid Directory or Directory does not exists!', 'danger')
+
+def goBack(default = 'account'):
+	return request.args.get('next') or \
+           request.referrer or \
+           url_for(default)
